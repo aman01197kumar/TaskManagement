@@ -2,15 +2,23 @@
 import React, { useState } from 'react'
 import '../../app/globals.css'
 
+//inetr
+interface tasklistType {
+    id: number;
+    title: string;
+    description: string;
+    status: string | null;
+}
+
 function TaskManager() {
     // state management with React useState Hook
-    const [title, setTitle] = useState<string>('')
-    const [description, setDescription] = useState<string>('')
-    const [status, setStatus] = useState<any>(null)
-    const [taskList, setTaskList] = useState<any[]>([])
-    const [taskId, setTaskId] = useState<number>(0)
-    const [toggleBtn, setToggleBtn] = useState<Boolean>(true)
-    const [activeIndex, setActiveIndex] = useState<any>(null)
+    const [title, setTitle] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [status, setStatus] = useState<string | null>(null);
+    const [taskList, setTaskList] = useState<tasklistType[]>([]);
+    const [taskId, setTaskId] = useState<number>(0);
+    const [toggleBtn, setToggleBtn] = useState<Boolean>(true);
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
     //add tasks to the array(tasjList)
     const addTaskHandler = (e: any) => {
@@ -22,11 +30,13 @@ function TaskManager() {
         } else if (!toggleBtn) {
             // Check if toggle button is false (indicating an edit operation)
             const temp = [...taskList];
-            temp[activeIndex].title = title;
-            temp[activeIndex].description = description;
-            temp[activeIndex].status = status
-            setActiveIndex(null);
-            setToggleBtn(true);
+            if (activeIndex !== null) {
+                temp[activeIndex].title = title;
+                temp[activeIndex].description = description;
+                temp[activeIndex].status = status;
+                setActiveIndex(null);
+                setToggleBtn(true);
+            }
         } else {
             // Add a new task to the task list
             setTaskList(prev => [
