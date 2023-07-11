@@ -7,14 +7,14 @@ function TodoList() {
     const [description, setDescription] = useState<string>('')
     const [status, setStatus] = useState<string>('todo')
     const [taskList, setTaskList] = useState<any[]>([])
-    let taskId: number = 0
+    const [taskId, setTaskId] = useState<number>(0)
 
     const addTaskHandler = () => {
 
         setTaskList(prev => [
             ...prev,
             {
-                id: generateId(),
+                id: taskId,
                 title: title,
                 desc: description,
                 status: status
@@ -22,16 +22,16 @@ function TodoList() {
         ]);
         setTitle('');
         setDescription('');
+        setTaskId(prev => prev + 1)
     };
-    const generateId = () => {
-        return taskId += 1;
-    }
+
     console.log(taskList)
     const onDeleteTaskHandler = (index: number) => {
         console.log(index);
-        const newArray = taskList.filter((_, i) => i !== index);
+        const newArray = taskList.filter((item) => item.id !== index);
         setTaskList(newArray);
     };
+
 
 
     return (
@@ -116,7 +116,11 @@ function TodoList() {
                                     </div>
                                     <div className='flex flex-col space-y-4'>
                                         <button className='border-1 rounded p-2 bg-yellow-500 text-white'>Edit</button>
-                                        <button className='border-1 rounded p-2 bg-red-700 text-white' onClick={() => onDeleteTaskHandler(item.id)}>Delete</button>
+                                        <button className='border-1 rounded p-2 bg-red-700 text-white' onClick={() => {
+                                            console.log(item.id)
+                                            onDeleteTaskHandler(item.id)
+                                        }
+                                        }>Delete</button>
                                     </div>
                                 </div>
                             )
