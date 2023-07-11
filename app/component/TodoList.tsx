@@ -2,37 +2,66 @@
 import React, { useState } from 'react'
 import '../../app/globals.css'
 
-function TodoList() {
+function TaskManager() {
+    // state management with React useState Hook
     const [title, setTitle] = useState<string>('')
     const [description, setDescription] = useState<string>('')
-    const [status, setStatus] = useState<string>('todo')
+    const [status, setStatus] = useState<any>(null)
     const [taskList, setTaskList] = useState<any[]>([])
     const [taskId, setTaskId] = useState<number>(0)
+    const [toggleBtn, setToggleBtn] = useState<Boolean>(true)
+    const [activeIndex, setActiveIndex] = useState<any>(null)
 
-    const addTaskHandler = () => {
+    //add tasks to the array(tasjList)
+    const addTaskHandler = (e: any) => {
+        e.preventDefault();
 
-        setTaskList(prev => [
-            ...prev,
-            {
-                id: taskId,
-                title: title,
-                desc: description,
-                status: status
-            }
-        ]);
-        setTitle('');
-        setDescription('');
+        if (!title && !description) {
+            // Check if title and description are empty
+            // Handle the case when no input is provided
+        } else if (!toggleBtn) {
+            // Check if toggle button is false (indicating an edit operation)
+            const temp = [...taskList];
+            temp[activeIndex].title = title;
+            temp[activeIndex].description = description;
+            temp[activeIndex].status = status
+            setActiveIndex(null);
+            setToggleBtn(true);
+        } else {
+            // Add a new task to the task list
+            setTaskList(prev => [
+                ...prev,
+                {
+                    id: taskId,
+                    title: title,
+                    description: description,
+                    status: status
+                }
+            ]);
+
+        }
+        // Reset input values and update task ID
+        setTitle("");
+        setDescription("");
+        setStatus(null)
         setTaskId(prev => prev + 1)
     };
 
-    console.log(taskList)
     const onDeleteTaskHandler = (index: number) => {
-        console.log(index);
+        // Filter the task list to remove the task with the specified ID
         const newArray = taskList.filter((item) => item.id !== index);
         setTaskList(newArray);
     };
 
-
+    function updateTaskHandler(index: number) {
+        // Retrieve the task item at the specified index
+        let editedItem = taskList[index];
+        setActiveIndex(index);
+        setToggleBtn(false);
+        setDescription(editedItem.description);
+        setStatus(editedItem.status)
+        setTitle(editedItem.title);
+    }
 
     return (
         <div>
@@ -97,7 +126,9 @@ function TodoList() {
                             </div>
                         </div>
                         <button className="bg-emerald-700 px-10 py-2 text-white rounded hover:shadow-md active:shadow-2xl transition ease-in-out duration-300 hover:scale-110 text-2xl" onClick={addTaskHandler}>
-                            +
+                            {
+                                toggleBtn ? "+" : "UPDATE"
+                            }
                         </button>
                     </div>
                 </div>
@@ -111,12 +142,12 @@ function TodoList() {
                                     <div>
 
                                         <div><span className='font-semibold'>Title: </span>{item.title}</div>
-                                        <div><span className='font-semibold'>Description: </span>{item.desc}</div>
+                                        <div><span className='font-semibold'>Description: </span>{item.description}</div>
                                         <div><span className='font-semibold'>Status: </span>{item.status}</div>
                                     </div>
                                     <div className='flex flex-col space-y-4'>
-                                        <button className='border-1 rounded p-2 bg-yellow-500 text-white'>Edit</button>
-                                        <button className='border-1 rounded p-2 bg-red-700 text-white' onClick={() => {
+                                        <button className='border-1 rounded p-2 bg-yellow-500 text-white hover:shadow-md active:shadow-2xl transition ease-in-out duration-300 hover:scale-110' onClick={() => updateTaskHandler(item.id)}>Edit</button>
+                                        <button className='border-1 rounded p-2 bg-red-700 text-white hover:shadow-md active:shadow-2xl transition ease-in-out duration-300 hover:scale-110' onClick={() => {
                                             console.log(item.id)
                                             onDeleteTaskHandler(item.id)
                                         }
@@ -132,4 +163,4 @@ function TodoList() {
     )
 }
 
-export default TodoList
+export default TaskManager

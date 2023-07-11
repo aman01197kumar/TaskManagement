@@ -1,9 +1,9 @@
-import TodoList from "./component/TodoList"
+import TaskManager from "./component/TodoList"
 
 export default function Home() {
   return (
     <main >
-      <TodoList />
+      <TaskManager />
     </main>
   )
 }
