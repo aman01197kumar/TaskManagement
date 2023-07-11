@@ -1,4 +1,4 @@
-import TaskManager from "./component/TodoList"
+import TaskManager from "./component/TaskManagement"
 
 export default function Home() {
   return (
