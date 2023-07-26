@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../../app/globals.css'
 
 //inetr
@@ -10,15 +10,32 @@ interface tasklistType {
     status: string | null;
 }
 
+function getArrayFromLocalStorage() {
+
+    const storedData = localStorage.getItem('myArray');
+    if (storedData) {
+        try {
+            return JSON.parse(storedData);
+        } catch (error) {
+            console.error('Error parsing array from localStorage:', error);
+        }
+    }
+    return []
+}
+
 function TaskManager() {
     // state management with React useState Hook
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [status, setStatus] = useState<string | null>(null);
-    const [taskList, setTaskList] = useState<tasklistType[]>([]);
+    const [taskList, setTaskList] = useState<tasklistType[]>(getArrayFromLocalStorage);
     const [taskId, setTaskId] = useState<number>(0);
     const [toggleBtn, setToggleBtn] = useState<Boolean>(true);
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+    const updateLocalStorageArray = (array: object) => {
+        localStorage.setItem('myArray', JSON.stringify(array));
+    };
 
     //add tasks to the array(tasjList)
     const addTaskHandler = (e: any) => {
@@ -61,6 +78,8 @@ function TaskManager() {
         // Filter the task list to remove the task with the specified ID
         const newArray = taskList.filter((item) => item.id !== index);
         setTaskList(newArray);
+
+        // updateLocalStorageArray(taskList)
     };
 
     function updateTaskHandler(index: number) {
@@ -72,6 +91,10 @@ function TaskManager() {
         setStatus(editedItem.status)
         setTitle(editedItem.title);
     }
+
+    useEffect(() => {
+        updateLocalStorageArray(taskList)
+    }, [taskList])
 
     return (
         <div>
