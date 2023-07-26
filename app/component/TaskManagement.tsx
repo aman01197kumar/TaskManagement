@@ -11,13 +11,15 @@ interface tasklistType {
 }
 
 function getArrayFromLocalStorage() {
+    if (typeof window !== 'undefined') {
 
-    const storedData = localStorage.getItem('myArray');
-    if (storedData) {
-        try {
-            return JSON.parse(storedData);
-        } catch (error) {
-            console.error('Error parsing array from localStorage:', error);
+        const storedData = localStorage.getItem('myArray');
+        if (storedData) {
+            try {
+                return JSON.parse(storedData);
+            } catch (error) {
+                console.error('Error parsing array from localStorage:', error);
+            }
         }
     }
     return []
@@ -34,7 +36,10 @@ function TaskManager() {
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
     const updateLocalStorageArray = (array: object) => {
-        localStorage.setItem('myArray', JSON.stringify(array));
+        if (typeof window !== 'undefined') {
+
+            localStorage.setItem('myArray', JSON.stringify(array));
+        }
     };
 
     //add tasks to the array(tasjList)
